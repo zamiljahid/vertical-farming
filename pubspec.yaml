@@ -15,6 +15,7 @@ dependencies:
   flutter_riverpod: ^2.6.1
   curved_navigation_bar: ^1.0.6
   vertical_card_pager: ^1.6.3
+  firebase_core: ^3.13.1
 
 dev_dependencies:
   flutter_test:
