@@ -31,7 +31,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       body: Container(decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Colors.black, Colors.green.shade900],
+          colors: [Color(0xFF0F2027),
+            Color(0xFF203A43),
+            Color(0xFF2C5364)
+          ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
@@ -39,11 +42,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
           child: Center(child: _pages[_selectedIndex])),
       bottomNavigationBar: Theme(
         data: Theme.of(context)
-            .copyWith(iconTheme: IconThemeData(color: Colors.green)),
+            .copyWith(iconTheme: IconThemeData(color: Color(0xFF2C5364))),
         child: CurvedNavigationBar(
-          color: Colors.black ,
-          buttonBackgroundColor: Colors.black,
-          backgroundColor: Colors.green.shade900,
+          color: Color(0xFF0F2027) ,
+          buttonBackgroundColor: Color(0xFF0F2027),
+          backgroundColor: Color(0xFF2C5364),
           animationCurve: Curves.easeInOut,
           animationDuration: Duration(milliseconds: 400),
           height: 60,

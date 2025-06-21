@@ -64,8 +64,8 @@ class _SettingsPageState extends State<SettingsPage> {
             ElevatedButton(
               onPressed: _applySettings,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                foregroundColor: Colors.green,
+                backgroundColor: Color(0xFF0F2027),
+                foregroundColor: Colors.white,
               ),
               child: const Text('Apply'),
             ),
@@ -83,10 +83,10 @@ class _SettingsPageState extends State<SettingsPage> {
         child: Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+              color:Color(0xFF203A43).withOpacity(0.8),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: Colors.white.withOpacity(0.3),
+                color: Color(0xFF2C5364).withOpacity(0.3),
               ),
             ),
             child: TextFormField(
@@ -98,11 +98,11 @@ class _SettingsPageState extends State<SettingsPage> {
                 labelStyle: const TextStyle(color: Colors.white),
                 enabledBorder: const OutlineInputBorder(
                   borderSide: BorderSide(
-                      color: Colors.white), // white border when not focused
+                      color: Color(0xFF2C5364)), // white border when not focused
                 ),
                 focusedBorder: const OutlineInputBorder(
                   borderSide: BorderSide(
-                      color: Colors.green), // red border when focused
+                      color: Colors.white), // red border when focused
                 ),
                 border: const OutlineInputBorder(), // fallback
               ),

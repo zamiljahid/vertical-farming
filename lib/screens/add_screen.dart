@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:vertical_card_pager/vertical_card_pager.dart';
 
 class AddPage extends StatefulWidget {
   @override
@@ -50,8 +49,6 @@ class _AddPageState extends State<AddPage> {
     },
   ];
 
-  int currentPage = 0;
-
   void _showCropInfo(BuildContext context, String cropName, String info) {
     showDialog(
       context: context,
@@ -70,82 +67,58 @@ class _AddPageState extends State<AddPage> {
 
   @override
   Widget build(BuildContext context) {
-    final titles = crops.map((crop) => crop['name'] as String).toList();
-
-    final cards = List.generate(crops.length, (index) {
-      final crop = crops[index];
-      final isActive = index == currentPage;
-
-      return Padding(
-        padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-        child: Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          elevation: 8,
-          child: Column(
-            children: [
-              Expanded(
-                flex: 6,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                  child: Image.network(
-                    crop['image'],
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                  ),
-                ),
-              ),
-              if (isActive)
-                Expanded(
-                  flex: 4,
-                  child: Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          crop['name'],
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 8),
-                        Flexible(
-                          child: SingleChildScrollView(
-                            child: Text(
-                              crop['info'],
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  ),
-                )
-              else
-                SizedBox(),
-            ],
-          ),
-        ),
-      );
-    });
-
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: VerticalCardPager(
-        titles: titles,
-        images: cards,
-        textStyle: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
+      body: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: GridView.builder(
+          itemCount: crops.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            childAspectRatio: 1,
+          ),
+          itemBuilder: (context, index) {
+            final crop = crops[index];
+            return GestureDetector(
+              onTap: () => _showCropInfo(context, crop['name'], crop['info']),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 4,
+                color: Color(0xFF203A43).withOpacity(0.6),
+                child: Column(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                      child: Image.network(
+                        crop['image'],
+                        height: 140,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text(
+                        crop['name'],
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
         ),
-        onPageChanged: (page) {
-          setState(() {
-            currentPage = (page ?? 0).toInt();
-          });
-        },
-        onSelectedItem: (index) {
-          final crop = crops[index];
-          _showCropInfo(context, crop['name'], crop['info']);
-        },
       ),
     );
   }
