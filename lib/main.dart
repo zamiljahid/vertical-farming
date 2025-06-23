@@ -27,8 +27,6 @@ class MainClassState extends State<MainClass> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      // theme:getThemeFromCode(appThemeCode),
-      // onGenerateRoute: RouterGenerator.generateRoute,
       home: SplashScreen(),
     );
   }
