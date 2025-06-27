@@ -19,15 +19,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   List<Widget> _pages = [
     HomePage(),
-    SettingsPage(),
-    AddPage(),
   ];
   @override
   Widget build(BuildContext context) {
     final items = <Widget>[
       Icon(Icons.home, size: 30),
-      Icon(Icons.settings, size: 30),
-      Icon(Icons.add, size: 30),
     ];
     return Scaffold(
       body: Container(decoration: BoxDecoration(

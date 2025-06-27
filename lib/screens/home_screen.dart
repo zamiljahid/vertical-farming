@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:firebase_database/firebase_database.dart';
@@ -13,29 +14,48 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  double wTemperature = 0;
-  double wHumidity = 0;
-  double wSoil = 0;
-  double wLight = 0;
-  double wWater = 0;
+  String? Temperature;
+  String? Co2;
+  String? Nigtrogen;
+  String? Phosphorus;
+  String? Potassium;
+  String? SoilMoisture;
+  String? Humidity;
+
+
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
     fetchSensorData();
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      fetchSensorData();
+    });
   }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
 
   void fetchSensorData() {
     final dbRef = FirebaseDatabase.instance.ref();
     dbRef.once().then((DatabaseEvent event) {
       final data = event.snapshot.value as Map<dynamic, dynamic>;
+      print('printing data');
 
       setState(() {
-        wTemperature = data['wTemperature']?.toDouble() ?? 0;
-        wHumidity = data['wHumidity']?.toDouble() ?? 0;
-        wSoil = data['wSoil']?.toDouble() ?? 0;
-        wLight = data['wLight']?.toDouble() ?? 0;
-        wWater = data['wWater']?.toDouble() ?? 0;
+        Temperature = data['Temperature'];
+        Co2 = data['Co2'];
+        Nigtrogen = data['Nigtrogen'];
+        Phosphorus = data['Phosphorus'];
+        Potassium = data['Potassium'];
+        SoilMoisture = data['SoilMoisture'];
+        Humidity = data['Humidity'];
+
       });
     });
   }
@@ -69,9 +89,9 @@ class _HomePageState extends State<HomePage> {
                   PieChartData(
                     sections: [
                       PieChartSectionData(
-                        value: wTemperature,
+                        value: double.tryParse(Temperature ?? '0'),
                         color: Colors.blue,
-                        title: '${wTemperature.toStringAsFixed(1)}°C',
+                        title: Temperature ?? '0',
                         radius: 50,
                         titleStyle: TextStyle(
                           fontSize: 14,
@@ -80,20 +100,9 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       PieChartSectionData(
-                        value: wSoil,
-                        color: Colors.red,
-                        title: '${wSoil.toStringAsFixed(1)}%',
-                        radius: 50,
-                        titleStyle: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      PieChartSectionData(
-                        value: wHumidity,
+                        value: double.tryParse(Humidity ?? '0'),
                         color: Colors.green,
-                        title: '${wHumidity.toStringAsFixed(1)}%',
+                        title: Humidity ?? '0',
                         radius: 50,
                         titleStyle: TextStyle(
                           fontSize: 14,
@@ -102,20 +111,9 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       PieChartSectionData(
-                        value: wLight,
+                        value: double.tryParse(Co2 ?? '0'),
                         color: Colors.orange,
-                        title: '${wLight.toStringAsFixed(1)}',
-                        radius: 50,
-                        titleStyle: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      PieChartSectionData(
-                        value: wWater,
-                        color: Colors.purple,
-                        title: '${wWater.toStringAsFixed(1)}',
+                        title: Co2 ?? '0',
                         radius: 50,
                         titleStyle: TextStyle(
                           fontSize: 14,
@@ -124,6 +122,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ],
+
                     sectionsSpace: 2,
                     centerSpaceRadius: 30,
                   ),
@@ -135,10 +134,8 @@ class _HomePageState extends State<HomePage> {
                 runSpacing: 10,
                 children: [
                   LegendItem(color: Colors.blue, text: 'Temperature'),
-                  LegendItem(color: Colors.red, text: 'Soil Moisture'),
                   LegendItem(color: Colors.green, text: 'Humidity'),
-                  LegendItem(color: Colors.orange, text: 'Light Intensity'),
-                  LegendItem(color: Colors.purple, text: 'Water Level'),
+                  LegendItem(color: Colors.orange, text: 'CO2'),
                 ],
               ),
             ],
@@ -172,11 +169,134 @@ class _HomePageState extends State<HomePage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          _buildInfoTile('Temperature', '${wTemperature.toStringAsFixed(1)}°C'),
-                          _buildInfoTile('Humidity', '${wHumidity.toStringAsFixed(1)}%'),
-                          _buildInfoTile('Soil Moisture', '${wSoil.toStringAsFixed(1)}%'),
+                          Column(
+                        children: [
+                        Text(
+                          'Temperature',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green.shade200,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        Temperature.toString(),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                          Column(
+                            children: [
+                              Text(
+                                'Humidity',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green.shade200,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                Humidity.toString(),
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                'SoilMoisture',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green.shade200,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                SoilMoisture.toString(),
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            children: [
+                              Text(
+                                'Phosphorus',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green.shade200,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                Phosphorus.toString(),
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                'Nitrogen',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green.shade200,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                Nigtrogen.toString(),
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                'Potassium',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green.shade200,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                Potassium.toString(),
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )
                     ],
                   ),
                 ),
