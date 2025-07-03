@@ -16,9 +16,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String? Temperature;
   String? Co2;
-  String? Nigtrogen;
-  String? Phosphorus;
-  String? Potassium;
+  String? Fans;
+  String? MistMaker;
   String? SoilMoisture;
   String? Humidity;
 
@@ -41,23 +40,27 @@ class _HomePageState extends State<HomePage> {
   }
 
 
-  void fetchSensorData() {
+  void fetchSensorData() async {
     final dbRef = FirebaseDatabase.instance.ref();
-    dbRef.once().then((DatabaseEvent event) {
-      final data = event.snapshot.value as Map<dynamic, dynamic>;
-      print('printing data');
+    try {
+      final event = await dbRef.once();
+      final data = event.snapshot.value as Map<dynamic, dynamic>?;
 
-      setState(() {
-        Temperature = data['Temperature'];
-        Co2 = data['Co2'];
-        Nigtrogen = data['Nigtrogen'];
-        Phosphorus = data['Phosphorus'];
-        Potassium = data['Potassium'];
-        SoilMoisture = data['SoilMoisture'];
-        Humidity = data['Humidity'];
-
-      });
-    });
+      if (data != null) {
+        setState(() {
+          Temperature = data['Temperature'];
+          Co2 = data['CO2'];
+          Fans = data['FanStatus'];
+          MistMaker = data['MistMakerStatus'];
+          SoilMoisture = data['SoilMoisture1'];
+          Humidity = data['Humidity'];
+        });
+      } else {
+        print("No data found.");
+      }
+    } catch (e) {
+      print("Error fetching data: $e");
+    }
   }
 
 
@@ -238,7 +241,7 @@ class _HomePageState extends State<HomePage> {
                           Column(
                             children: [
                               Text(
-                                'Phosphorus',
+                                'Mist Maker Status',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -247,7 +250,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                Phosphorus.toString(),
+                                MistMaker.toString(),
                                 style: const TextStyle(
                                   fontSize: 12,
                                   color: Colors.white,
@@ -258,7 +261,7 @@ class _HomePageState extends State<HomePage> {
                           Column(
                             children: [
                               Text(
-                                'Nitrogen',
+                                'Cooling Fans Status',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -267,27 +270,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                Nigtrogen.toString(),
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Text(
-                                'Potassium',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.green.shade200,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                Potassium.toString(),
+                                Fans.toString(),
                                 style: const TextStyle(
                                   fontSize: 12,
                                   color: Colors.white,
